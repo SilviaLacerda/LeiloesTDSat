@@ -32,7 +32,7 @@ public class ProdutosDAO {
             stmt.setInt(2, produto.getValor());
             stmt.setString(3, produto.getStatus());
             stmt.execute();
-           
+             JOptionPane.showMessageDialog(null, "Cadastro realizado com sucesso!");
             //tratando o erro, caso ele ocorra
         } catch (Exception e) {
             System.out.println("Erro ao inserir cadastro de produtos: " + e.getMessage());

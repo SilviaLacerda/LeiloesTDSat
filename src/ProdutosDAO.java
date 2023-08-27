@@ -8,6 +8,7 @@ import java.sql.Connection;
 import javax.swing.JOptionPane;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProdutosDAO {
 
@@ -39,9 +40,39 @@ public class ProdutosDAO {
         }
     }
 
-    public ArrayList<ProdutosDTO> listarProdutos() {
+    public List<ProdutosDTO> listarProdutos() {
 
-        return listagem;
+        String sql = "SELECT * FROM produtos";
+
+        try {
+            PreparedStatement stmt = this.conn.prepareStatement(sql);
+
+            //      stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            List<ProdutosDTO> listaProdutos = new ArrayList<>();
+            //percorrer o resultSet e salvar as informações dentro de uma variável
+            //Depois salva essa variavel dentro da lista
+
+            //Estrutura de repetição While
+            while (rs.next()) { //.next retorna verdadeiro caso exista uma próxima posição dentro do array
+                ProdutosDTO produto = new ProdutosDTO();
+                //Salvar dentro da variavel empresa, as informações            
+                produto.setId(rs.getInt("id"));
+                produto.setNome(rs.getString("nome"));
+                produto.setValor(rs.getInt("valor"));
+                produto.setStatus(rs.getString("status"));
+                //Adicionando os elementos na lista criada
+                listaProdutos.add(produto);
+            }
+            //Após finalizar o while, o retorno será a listaProdutoss, onde cada posição é um registro do banco de dados
+            return listaProdutos;
+
+            //Se o método entrar no "Catch" quer dizer que não encontrou nenhuma empresa, então damos um "return null"
+        } catch (Exception e) {
+            return null;
+        }
+
     }
 
 }

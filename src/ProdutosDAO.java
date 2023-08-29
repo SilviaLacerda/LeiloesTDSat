@@ -33,7 +33,7 @@ public class ProdutosDAO {
             stmt.setInt(2, produto.getValor());
             stmt.setString(3, produto.getStatus());
             stmt.execute();
-             JOptionPane.showMessageDialog(null, "Cadastro realizado com sucesso!");
+            JOptionPane.showMessageDialog(null, "Cadastro realizado com sucesso!");
             //tratando o erro, caso ele ocorra
         } catch (Exception e) {
             System.out.println("Erro ao inserir cadastro de produtos: " + e.getMessage());
@@ -75,4 +75,56 @@ public class ProdutosDAO {
 
     }
 
+    public void venderProduto(int id) {
+
+        //string sql com o código de update para o banco de dados
+        String sql = "UPDATE produtos SET status = 'Vendido' WHERE id = ?";
+        try {
+            PreparedStatement stmt = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            //Setando os parâmetros
+            stmt.setInt(1, id);
+            //  System.out.println("será?");
+            //Executando a query
+            stmt.execute();
+            //tratando o erro, caso ele ocorra
+        } catch (Exception e) {
+            System.out.println("Erro ao editar empresa: " + e.getMessage());
+        }
+    }
+
+    public List<ProdutosDTO> listarProdutosVendidos() {
+
+        String sql = "SELECT * FROM produtos WHERE status = 'Vendido'";
+
+        try {
+            PreparedStatement stmt = this.conn.prepareStatement(sql);
+
+            //stmt.setString(1, "Vendido");
+            ResultSet rs = stmt.executeQuery();
+
+            List<ProdutosDTO> listaProdutosVendidos = new ArrayList<>();
+            //percorrer o resultSet e salvar as informações dentro de uma variável
+            //Depois salva essa variavel dentro da lista
+
+            //Estrutura de repetição While
+            while (rs.next()) { //.next retorna verdadeiro caso exista uma próxima posição dentro do array
+                ProdutosDTO produto = new ProdutosDTO();
+                //Salvar dentro da variavel empresa, as informações            
+                produto.setId(rs.getInt("id"));
+                produto.setNome(rs.getString("nome"));
+                produto.setValor(rs.getInt("valor"));
+                produto.setStatus(rs.getString("status"));
+                //Adicionando os elementos na lista criada
+                listaProdutosVendidos.add(produto);
+            }
+            //Após finalizar o while, o retorno será a listaProdutos, onde cada posição é um registro do banco de dados
+            return listaProdutosVendidos;
+
+            //Se o método entrar no "Catch" quer dizer que não encontrou nenhuma empresa, então damos um "return null"
+        } catch (Exception e) {
+            return null;
+        }
+
+    }
 }
